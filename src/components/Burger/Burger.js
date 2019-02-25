@@ -20,8 +20,12 @@ const burger = (props) => {
                 <BurgerIngredient key={item + i} type={item} />
             );
         }
+    });
+    console.log(transformedIngredients);
+
+    if(transformedIngredients.length === 0){
+        transformedIngredients = <p>Please start adding some ingredients!</p>
     }
-);
     return(
         <div className={classes.Burger}>
             <BurgerIngredient type="bread-top"/>
