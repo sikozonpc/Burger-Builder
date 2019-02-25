@@ -1,7 +1,7 @@
 import React from "react";
-import classes from "*.module.sass";
+import PropTypes from "prop-types";
 
-import classes from "./BurgerIngredient.css";
+import classes from "./BurgerIngredient.module.css";
 
 
 //
@@ -42,8 +42,8 @@ const burgerIngredient = (props) => {
 };
 
 // PropType Validation
-burgerIngredient.propType = {
-
+burgerIngredient.propTypes = {
+    type: PropTypes.string.isRequired
 };
 
 
