@@ -19,6 +19,7 @@ const oderSummary = (props) => {
             <ul>
                 {ingredientsSummary}
             </ul>
+            <p><strong>Total price: {props.price.toFixed(2)} $</strong></p>
             <p>Continue to Checkout ?</p>
             <Button buttonType="Danger" clicked={props.purchaseCancled}>CANCEL</Button>
             <Button buttonType="Success" clicked={props.purchaseContinue}>CONTINUE</Button>
