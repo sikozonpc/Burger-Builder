@@ -30,10 +30,10 @@ const modal = (props) => {
   the same result as passing prevProps to render,
   otherwise return false
   */
-function showAreEqual(prevProps, nextProps){
-    return prevProps.show === nextProps.show;
+function shouldUpadte(prevProps, nextProps){
+    return (prevProps.show === nextProps.show || (prevProps.children !== nextProps.children));
 }
 
 
-// Only renders if props chnage, same as shouldComponentUpdate in class based comps.
-export default React.memo(modal, showAreEqual);
+// Only renders if props change, same as shouldComponentUpdate in class based comps.
+export default modal
