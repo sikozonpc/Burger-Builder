@@ -6,7 +6,7 @@ import classes from "./Burger.module.css";
 
 
 //
-// Burger Component is responsible to compose the burger.
+// Burger Component is responsible for composing the burger.
 //
 const burger = (props) => {
     // Returns an array of string from the keys of an object.
@@ -21,7 +21,6 @@ const burger = (props) => {
             );
         }
     });
-    console.log(transformedIngredients);
 
     if(transformedIngredients.length === 0){
         transformedIngredients = <p>Please start adding some ingredients!</p>
