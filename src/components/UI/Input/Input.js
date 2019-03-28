@@ -5,24 +5,35 @@ import classes from "./Input.module.css";
 
 const input = (props) => {
     let inputEleme = null;
+    const inputClasses = [classes.InputElement]
+
+    if( props.invalid && props.shouldValidate && props.touched ) {
+        inputClasses.push( classes.Invalid );
+    }
+
+    let validationError = null;
+    if (props.invalid && props.touched) {
+        validationError = <p className={classes.ValidationError}>Please enter a valid { props.valueType }</p>;
+    }
 
     switch(props.elementType) {
         case ( "input" ):
             inputEleme = <input 
-                className={classes.InputElement} {...props.elementConfig} 
+                className={inputClasses.join(" ")}
+                 {...props.elementConfig} 
                 value={props.value} 
                 onChange={props.changed}  />;
             break;
         case ( "textarea" ):
             inputEleme = <textarea 
-                className={classes.InputElement} 
+                className={inputClasses.join(" ")} 
                 {...props.elementConfig}
                 value={props.value} 
                 onChange={props.changed}  />;
             break;
         case ( "select" ):
         inputEleme = <select 
-            className={classes.InputElement} 
+            className={inputClasses.join(" ")} 
             onChange={props.changed} >
             { props.elementConfig.options.map( e => {
                 return (<option key={e.value} value={e.value}>{e.displayValue}</option>)
@@ -31,7 +42,7 @@ const input = (props) => {
         break;
         default:
             inputEleme = <input
-                className={classes.InputElement}
+                className={inputClasses.join(" ")}
                 {...props.elementConfig} 
                 value={props.value} 
                 onChange={props.changed} />;
@@ -42,6 +53,7 @@ const input = (props) => {
         <div className={classes.Input} > 
             <label className={classes.Label} >{props.label}</label>
             { inputEleme }
+            {validationError}
         </div>
     );
 };

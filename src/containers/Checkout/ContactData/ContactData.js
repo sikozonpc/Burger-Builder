@@ -6,14 +6,13 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input"; 
 
 import classes from "./ContactData.module.css"
-import input from '../../../components/UI/Input/Input';
-
 
 // Helper function for creating the in-depth object in state
-const createConfig = ( _inptType, _placeholder, _type, _options=OPTIONS ) => {
+const createConfig = ( _valueType,_inptType, _placeholder, _type, _options=OPTIONS, _minLength ) => {
     if( _inptType === "select"  ) {
         return { 
             elementType: "select", 
+            valueType: _valueType,
             elementConfig: {
                 options: _options
             },
@@ -22,11 +21,18 @@ const createConfig = ( _inptType, _placeholder, _type, _options=OPTIONS ) => {
     } else {
         return { 
             elementType: _inptType, 
+            valueType: _valueType,
             elementConfig: {
                 type: _type,
                 placeholder: _placeholder
             },
-            value: ""
+            value: "",
+            validation: {
+                required: true,
+                minLength: _minLength
+            },
+            valid: false,
+            touched: false
          }
     }
 };
@@ -40,15 +46,28 @@ const OPTIONS = [
 class ContactData extends Component {
     state = {
         orderForm: {
-            name: createConfig(  "input", "Your Name", "text"  ),
-            street: createConfig(  "input", "Street Name", "text"  ),
-            zipCode: createConfig(  "input", "Zip Code", "text"  ),
-            country: createConfig(  "input", "Your Country Name", "text"  ),
-            email: createConfig(  "input", "Your Email", "email"  ),
-            deliveryMethod: createConfig(  "select" )
+            name: createConfig( "Name" ,"input", "Your Name", "text"  ),
+            street: createConfig( "Street name","input", "Street Name", "text"  ),
+            zipCode: createConfig( "Zip code" ,"input", "Zip Code", "text",null, 5  ),
+            country: createConfig( "Contry name" , "input", "Your Country Name", "text"  ),
+            email: createConfig( "Email adress" ,"input", "Your Email", "email"  ),
+            deliveryMethod: createConfig( "Please select an option" ,"select" )
         },
         loading: false
     };
+
+    checkValidity = ( value, rules ) => {
+        let isValid = true;
+
+        if ( rules.required && isValid) {
+            isValid = value.trim() !== ""; 
+        }
+        if( rules.minLength  && isValid) {
+            isValid = value.length >= rules.minLength;
+        }
+
+        return isValid;
+    }
 
     orderHandler = ( event ) => {
         event.preventDefault();
@@ -76,7 +95,7 @@ class ContactData extends Component {
     }
 
 
-    // Safly changed the value property of the orderForm in state on input change
+    // Safely changed the value property of the orderForm in state on input change
     inputChangedHandler = (  event, inputIndentifier  ) => {
         const updatedOrderForm = { 
             ...this.state.orderForm
@@ -86,8 +105,14 @@ class ContactData extends Component {
              ...updatedOrderForm[ inputIndentifier ] 
         };
         updatedFormElem.value = event.target.value;
+        // Update touched element
+        updatedFormElem.touched = true;
+        // VALIDATION 
+        updatedFormElem.valid = this.checkValidity( 
+            updatedFormElem.value, updatedFormElem.validation
+         );
         updatedOrderForm[ inputIndentifier ] = updatedFormElem;
-
+            console.log(updatedFormElem.valid)
         this.setState( { orderForm: updatedOrderForm } )
     }
 
@@ -110,6 +135,10 @@ class ContactData extends Component {
                         key={e.id}
                         elementType={e.config.elementType} 
                         elementConfig={e.config.elementConfig} 
+                        invalid={!e.config.valid}
+                        touched={e.config.touched}
+                        valueType={e.config.valueType}
+                        shouldValidate={e.config.validation}
                         value={e.config.value}
                         changed={( event ) =>this.inputChangedHandler(event, e.id ) } />
                 } ) }
