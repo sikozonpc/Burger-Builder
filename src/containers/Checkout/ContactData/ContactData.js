@@ -16,7 +16,9 @@ const createConfig = ( _valueType,_inptType, _placeholder, _type, _options=OPTIO
             elementConfig: {
                 options: _options
             },
-            value: ""
+            value: "",
+            validation: {},
+            valid: true
          }
     } else {
         return { 
@@ -53,7 +55,8 @@ class ContactData extends Component {
             email: createConfig( "Email adress" ,"input", "Your Email", "email"  ),
             deliveryMethod: createConfig( "Please select an option" ,"select" )
         },
-        loading: false
+        loading: false,
+        formIsValid: false
     };
 
     checkValidity = ( value, rules ) => {
@@ -112,8 +115,14 @@ class ContactData extends Component {
             updatedFormElem.value, updatedFormElem.validation
          );
         updatedOrderForm[ inputIndentifier ] = updatedFormElem;
-            console.log(updatedFormElem.valid)
-        this.setState( { orderForm: updatedOrderForm } )
+        
+        // Overall form validity
+        let formIsValid = true;
+        for( let inpt in updatedOrderForm ){
+            formIsValid = ( updatedOrderForm[inpt].valid && formIsValid );
+        }
+
+        this.setState( { orderForm: updatedOrderForm, formIsValid: formIsValid } )
     }
 
 
@@ -142,7 +151,10 @@ class ContactData extends Component {
                         value={e.config.value}
                         changed={( event ) =>this.inputChangedHandler(event, e.id ) } />
                 } ) }
-                <Button buttonType="Success" clicked={this.orderHandler}>ORDER</Button>
+                <Button
+                    disabled={!this.state.formIsValid}
+                    buttonType="Success"
+                    clicked={this.orderHandler}>ORDER</Button>
             </form> );
 
         if( this.state.loading ) {
