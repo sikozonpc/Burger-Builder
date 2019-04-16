@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import axios from "../../../axios-orders";
 import { connect } from "react-redux";
+import * as actions from "../../../store/actions/index";
 
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input"; 
+import withErrorHandling from "../../../hoc/withErrorHandeling/withErrorHandeling";
 
 import classes from "./ContactData.module.css"
 
@@ -17,7 +19,7 @@ const createConfig = ( _valueType,_inptType, _placeholder, _type, _options=OPTIO
             elementConfig: {
                 options: _options
             },
-            value: "",
+            value: "fastest",
             validation: {},
             valid: true
          }
@@ -51,12 +53,11 @@ class ContactData extends Component {
         orderForm: {
             name: createConfig( "Name" ,"input", "Your Name", "text"  ),
             street: createConfig( "Street name","input", "Street Name", "text"  ),
-            zipCode: createConfig( "Zip code" ,"input", "Zip Code", "text",null, 5  ),
+            zipCode: createConfig( "Zip code" ,"input", "Zip Code", "text", null, 5  ),
             country: createConfig( "Contry name" , "input", "Your Country Name", "text"  ),
             email: createConfig( "Email adress" ,"input", "Your Email", "email"  ),
             deliveryMethod: createConfig( "Please select an option" ,"select" )
         },
-        loading: false,
         formIsValid: false
     };
 
@@ -76,26 +77,17 @@ class ContactData extends Component {
     orderHandler = ( event ) => {
         event.preventDefault();
 
-        // IMPORTANT: if this was a producion service this had to be done in the
-        // Back-end since the user can manipulate the price on the client.
-        this.setState( { loading: true } )
-
         const formData = {};
         for( let formElem in this.state.orderForm ) {
             formData[ formElem ] = this.state.orderForm[ formElem ].value;
         }
 
-        const order = { 
+        const orderData = { 
             ingredients: this.props.ingredients,
             price: this.props.totalPrice,
             orderData: formData
         }
-        axios.post(  "/orders.json", order  ) // .json is the endpoint for firebase to work
-            .then( res => {
-                this.setState( {loading: false } );
-                this.props.history.push( "/" );  
-            } )
-            .catch( err => this.setState(  {loading: false } )  );
+        this.props.onOrderBurger(orderData);
     }
 
 
@@ -158,7 +150,7 @@ class ContactData extends Component {
                     clicked={this.orderHandler}>ORDER</Button>
             </form> );
 
-        if( this.state.loading ) {
+        if( this.props.loading ) {
             form = <Spinner />
         }
 
@@ -174,10 +166,17 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ingredients: state.ingredients,
-        totalPrice: state.totalPrice
+        ingredients: state.burgerBuilder.ingredients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        loading: state.orders.loading
     }
-}
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderBurger: (orderData) => dispatch( actions.purchaseBurger(orderData) )
+    };
+};
 
 
-export default connect(mapStateToProps)(ContactData);
+export default connect(mapStateToProps, mapDispatchToProps )(withErrorHandling(ContactData, axios));

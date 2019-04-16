@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom';
 
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import ingredientsReducer from "./store/reducers/ingredients.reducer";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import thunk from "redux-thunk";
+
+import ingredientsReducer from "./store/reducers/burgerBuilder.reducer";
+import orderReducer from "./store/reducers/order.reducer";
 
 import './index.css';
 import App from "./App";
@@ -12,10 +15,22 @@ import * as serviceWorker from './serviceWorker';
 
 
 // Creates Redux Reducer
-const rootReducer = ingredientsReducer;
+const rootReducer = combineReducers({
+    burgerBuilder: ingredientsReducer,
+    orders: orderReducer
+});
+
+// Middleware 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 
 // Creates Redux Store
-const store = createStore( rootReducer );
+const store = createStore( 
+    rootReducer, 
+    composeEnhancers(
+        applyMiddleware(thunk)
+      )
+);
 
 // Subscription
 store.subscribe( () => console.log("[Subscritpion]: ", store.getState()) );
