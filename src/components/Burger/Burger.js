@@ -4,34 +4,32 @@ import BurgerIngredient from "./BurgerIngredient/BurgerIngredient";
 
 import classes from "./Burger.module.css";
 
-
 //
 // Burger Component is responsible for composing the burger.
 //
 const burger = (props) => {
-    // Returns an array of string from the keys of an object.
-    // then iterates (in the for loop) trough the amount of ingrededients to generate 
-    // the right amount of ingredients of each type.
-    let transformedIngredients = [];
-    Object.keys(props.ingredients).forEach(
-    item => {
-        for (let i = 0; i < props.ingredients[item]; i++) {
-            transformedIngredients.push(
-                <BurgerIngredient key={item + i} type={item} />
-            );
-        }
-    });
+	// Returns an array of string from the keys of an object.
+	// then iterates (in the for loop) trough the amount of ingrededients to generate
+	// the right amount of ingredients of each type.
+	let transformedIngredients = [];
+	Object.keys(props.ingredients).forEach((item) => {
+		for (let i = 0; i < props.ingredients[item]; i++) {
+			transformedIngredients.push(
+				<BurgerIngredient key={item + i} type={item} />
+			);
+		}
+	});
 
-    if(transformedIngredients.length === 0){
-        transformedIngredients = <p>Please start adding some ingredients!</p>
-    }
-    return(
-        <div className={classes.Burger}>
-            <BurgerIngredient type="bread-top"/>
-            {transformedIngredients}
-            <BurgerIngredient type="bread-bottom"/>
-        </div>
-    );
+	if (transformedIngredients.length === 0) {
+		transformedIngredients = <p>Please start adding some ingredients!</p>;
+	}
+	return (
+		<div className={classes.Burger}>
+			<BurgerIngredient type="bread-top" />
+			{transformedIngredients}
+			<BurgerIngredient type="bread-bottom" />
+		</div>
+	);
 };
 
 export default burger;

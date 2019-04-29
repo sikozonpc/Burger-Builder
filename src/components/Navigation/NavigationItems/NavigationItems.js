@@ -17,7 +17,7 @@ const navigationItems = (props) => {
 					<p style={{ color: "#ff7" }}>
 						Logged as {props.userEmail} |
 					</p>
-					<NavigationItem link="/logout"> Logout</NavigationItem>
+					<NavigationItem link="/logout">Logout</NavigationItem>
 				</>
 			)}
 		</ul>

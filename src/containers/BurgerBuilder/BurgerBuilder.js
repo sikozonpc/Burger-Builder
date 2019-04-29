@@ -14,7 +14,7 @@ import axios from "../../axios-orders";
 // Statefull Container responsible for hooking up the whole Burger building functionality
 // and updating the state of the app.
 //
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
 	state = {
 		purchasing: false,
 	};

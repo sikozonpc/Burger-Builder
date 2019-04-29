@@ -22,7 +22,10 @@ const rootReducer = combineReducers({
 });
 
 // Middleware
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =
+	process.env.NODE_ENV === "development"
+		? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+		: null || compose;
 
 // Creates Redux Store
 const store = createStore(
@@ -31,7 +34,7 @@ const store = createStore(
 );
 
 // Subscription
-store.subscribe(() => console.log("[Subscritpion]: ", store.getState()));
+// store.subscribe(() => console.log("[Subscritpion]: ", store.getState()));
 
 // Setting up the router on the root file
 const app = (
